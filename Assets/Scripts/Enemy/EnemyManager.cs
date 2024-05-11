@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -8,16 +10,21 @@ using UnityEngine.UI;
 
 public class EnemyManager : MonoBehaviour
 {
+    [Header("Componenets")]
     [SerializeField] private EnemyData data;
+    [SerializeField] private GameManager _gameManager;
+    [SerializeField] private GameObject hookExpVFX;
+    private SpriteRenderer _spriteRenderer;
+    private Sprite _sprite;
+    private AnimatorController _animation;
+    private Animator _animator;
+    private BoxCollider2D _collider;
 
     [Header("UI")]
     [SerializeField] private Text _textName;
     
     [Header("Art")]
-    [SerializeField] private SpriteRenderer _spriteRenderer;
-    [SerializeField] private Sprite _sprite;
-    [SerializeField] private AnimatorController _animation;
-    [SerializeField] private Animator _animator;
+
 
     [Header("Values")] 
     [SerializeField] private float _health;
@@ -27,12 +34,11 @@ public class EnemyManager : MonoBehaviour
     private bool attacking = false;
     private bool ınTrigger = false;
 
-    [SerializeField] private GameManager _gameManager;
-
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
+        _collider = GetComponent<BoxCollider2D>();
     }
 
     private void OnEnable()
@@ -47,6 +53,8 @@ public class EnemyManager : MonoBehaviour
     {
         // _spriteRenderer.sprite = _sprite
         _animator.runtimeAnimatorController = _animation;
+        
+        _collider.size = new Vector2(_spriteRenderer.size.x, _spriteRenderer.size.y);
     }
 
     private void Update()
@@ -86,6 +94,11 @@ public class EnemyManager : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, _gameManager._player.transform.position, _speed * Time.deltaTime);
         }
+    }
+
+    private void replacePlayer()
+    {
+        
     }
 
     private bool attackDistance()
@@ -132,6 +145,15 @@ public class EnemyManager : MonoBehaviour
         if (other.gameObject.tag == "NormalAttack")
         {
             ınTrigger = true;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Hook")
+        {
+            Destroy(other.transform.parent.gameObject);
+            Instantiate(hookExpVFX, transform.position, quaternion.identity);   
         }
     }
 }

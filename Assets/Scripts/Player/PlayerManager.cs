@@ -12,11 +12,15 @@ public class PlayerManager : MonoBehaviour
     private Animator _animatorController; 
         
     [SerializeField] private GameObject attackCollider;
-
+    [SerializeField] private GameObject hookAttack;
+    private GameObject newHook;
+    
     [Header("Values")]
     private float _horizontal;
     private float _vertical;
     [SerializeField] private float _speedPlayer = 5f;
+    
+    Vector2 mousePosition;
     
     void Awake()
     {
@@ -29,6 +33,14 @@ public class PlayerManager : MonoBehaviour
         attackInput();
         
         animationPlayer();
+        
+        playerHook();
+
+        if (newHook != null)
+        {
+            newHook.transform.position = transform.position;
+            newHook.transform.LookAt(mousePosition);
+        }
     }
 
     private void FixedUpdate()
@@ -55,4 +67,19 @@ public class PlayerManager : MonoBehaviour
     {
         _animatorController.SetFloat("Speed", Mathf.Abs(_horizontal + _vertical));
     }
+
+    void playerHook()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            newHook = Instantiate(hookAttack, transform.position, Quaternion.identity);
+            
+            if (newHook != null)
+            {
+                mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            }
+        }
+    }
+    
+    
 }
