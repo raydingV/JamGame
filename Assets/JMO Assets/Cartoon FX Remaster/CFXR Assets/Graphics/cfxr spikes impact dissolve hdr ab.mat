@@ -37,7 +37,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DissolveTex:
-        m_Texture: {fileID: 2800000, guid: fed2aee048e3fef4390a44a3cc92d6e2, type: 3}
+        m_Texture: {fileID: 2800000, guid: e1358454c3722f043bdd0a5a90a7e0a7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DistortTex:
@@ -49,7 +49,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 5afa5285575bfba4e9392f0b56620f45, type: 3}
+        m_Texture: {fileID: 2800000, guid: 33dd1a1dcf1c12443878e29da1663b41, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OverlayTex:
