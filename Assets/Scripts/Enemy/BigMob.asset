@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e646a00559d7de9428f948bc10a2185c, type: 3}
+  m_Name: BigMob
+  m_EditorClassIdentifier: 
+  enemyName: BigMob
+  Art: {fileID: -2121876671, guid: 173b4bb04dfeb0e408462d053a3fda6d, type: 3}
+  Animation: {fileID: 9100000, guid: 6189f42e271905e4895b3c2b47c84cab, type: 2}
+  Health: 150
+  Speed: 5
+  Distance: 4
+  Scale: {x: 8, y: 8, z: 8}
