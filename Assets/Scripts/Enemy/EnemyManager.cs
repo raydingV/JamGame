@@ -24,6 +24,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private float _speed;
     
     private bool attacking = false;
+    private bool ınTrigger = false;
 
     [SerializeField] private GameManager _gameManager;
 
@@ -62,6 +63,8 @@ public class EnemyManager : MonoBehaviour
     void FixedUpdate()
     {
         followPlayer();
+
+        ınTrigger = false;
     }
 
     private void InitializeData()
@@ -75,7 +78,7 @@ public class EnemyManager : MonoBehaviour
 
     private void followPlayer()
     {
-        if(attacking == false)
+        if(attacking == false && ınTrigger == false)
         {
             transform.position = Vector2.MoveTowards(transform.position, _gameManager._player.transform.position, _speed * Time.deltaTime);
         }
@@ -118,6 +121,30 @@ public class EnemyManager : MonoBehaviour
         else
         {
             _spriteRenderer.flipX = false;
+        }
+    }
+    //
+    // IEnumerator trgiggered()
+    // {
+    //     yield return new WaitForSeconds(0.3f);
+    //
+    //     ınTrigger = false;
+    // }
+    //
+    // private void OnCollisionEnter2D(Collision2D other)
+    // {
+    //     if (other.gameObject.tag == "NormalAttack")
+    //     {
+    //         ınTrigger = true;
+    //         StartCoroutine(trgiggered());
+    //     }
+    // }
+
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "NormalAttack")
+        {
+            ınTrigger = true;
         }
     }
 }
