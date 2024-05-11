@@ -22,6 +22,7 @@ public class EnemyManager : MonoBehaviour
     [Header("Values")] 
     [SerializeField] private float _health;
     [SerializeField] private float _speed;
+    [SerializeField] private float _distanceAttack;
     
     private bool attacking = false;
     private bool ınTrigger = false;
@@ -50,12 +51,13 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
-        if (attackDistance() == true && attacking == false)
+        if (attackDistance() == true)
         {
-            attacking = true;
-            animationControl();
+            animationControl(true);
         }
-        
+
+        attacking = attackDistance();
+
         controlAnimEnd();
         rotation();
     }
@@ -70,10 +72,12 @@ public class EnemyManager : MonoBehaviour
     private void InitializeData()
     {
         // _textName.text = data.enemyName;
-         _sprite = data.Art;
+        _sprite = data.Art;
         _animation = data.Animation;
         _health = data.Health;
         _speed = data.Speed;
+        transform.localScale = data.Scale;
+        _distanceAttack = data.Distance;
     }
 
     private void followPlayer()
@@ -88,7 +92,7 @@ public class EnemyManager : MonoBehaviour
     {
         // Debug.Log("Distance: " + Vector2.Distance(this.transform.position, _gameManager._player.transform.position));
         
-        if (Vector2.Distance(this.transform.position, _gameManager._player.transform.position) < 3f)
+        if (Vector2.Distance(this.transform.position, _gameManager._player.transform.position) < _distanceAttack)
         {
             return true;
         }
@@ -100,16 +104,15 @@ public class EnemyManager : MonoBehaviour
 
     private void controlAnimEnd()
     {
-        if (_animator != null && _animator.GetCurrentAnimatorStateInfo(0).IsTag("attackFinish"))
+        if (_animator != null && _animator.GetCurrentAnimatorStateInfo(0).IsTag("InAttack"))
         {
-            attacking = false;
-            animationControl();
+            animationControl(false);
         }
     }
 
-    private void animationControl()
+    private void animationControl(bool _condition)
     {
-        _animator.SetBool("Attack", attacking);
+        _animator.SetBool("Attack", _condition);
     }
 
     private void rotation()
@@ -123,22 +126,6 @@ public class EnemyManager : MonoBehaviour
             _spriteRenderer.flipX = false;
         }
     }
-    //
-    // IEnumerator trgiggered()
-    // {
-    //     yield return new WaitForSeconds(0.3f);
-    //
-    //     ınTrigger = false;
-    // }
-    //
-    // private void OnCollisionEnter2D(Collision2D other)
-    // {
-    //     if (other.gameObject.tag == "NormalAttack")
-    //     {
-    //         ınTrigger = true;
-    //         StartCoroutine(trgiggered());
-    //     }
-    // }
 
     private void OnCollisionStay2D(Collision2D other)
     {
