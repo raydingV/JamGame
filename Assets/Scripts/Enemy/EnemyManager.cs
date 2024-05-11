@@ -16,7 +16,9 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private GameObject hookExpVFX;
     private SpriteRenderer _spriteRenderer;
     private Sprite _sprite;
+    private Sprite _spriteVirus;
     private AnimatorController _animation;
+    private AnimatorController _animationVirus;
     private Animator _animator;
     private BoxCollider2D _collider;
 
@@ -81,7 +83,9 @@ public class EnemyManager : MonoBehaviour
     {
         // _textName.text = data.enemyName;
         _sprite = data.Art;
-        _animation = data.Animation;
+        _spriteVirus = data.ArtVirus;
+        _animation = data.AnimationNormal;
+        _animationVirus = data.AnimationVırus;
         _health = data.Health;
         _speed = data.Speed;
         transform.localScale = data.Scale;
@@ -98,7 +102,14 @@ public class EnemyManager : MonoBehaviour
 
     private void replacePlayer()
     {
-        
+        if (_gameManager != null & _gameManager._player != null)
+        {
+            _gameManager._player._capture = true;
+            _gameManager._player.spriteShow(_spriteVirus);
+            _gameManager._player.AnimationController(_animationVirus);
+            _gameManager._player.collectDataEnemy(_speed + 2, _health, data.Scale);
+            _gameManager._player.transform.position = transform.position;
+        }
     }
 
     private bool attackDistance()
@@ -152,8 +163,10 @@ public class EnemyManager : MonoBehaviour
     {
         if (other.gameObject.tag == "Hook")
         {
+            replacePlayer();;
             Destroy(other.transform.parent.gameObject);
             Instantiate(hookExpVFX, transform.position, quaternion.identity);   
+            Destroy(gameObject);
         }
     }
 }

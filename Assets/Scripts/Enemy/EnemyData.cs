@@ -11,7 +11,9 @@ public class EnemyData : ScriptableObject
 
     [Header("ArtWorks")]
     public Sprite Art;
-    public AnimatorController Animation;
+    public Sprite ArtVirus;
+    public AnimatorController AnimationNormal;
+    public AnimatorController AnimationVırus;
     
     [Header("Values")]
     public float Health;
