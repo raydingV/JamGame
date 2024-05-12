@@ -43,6 +43,11 @@ public class EnemyManager : MonoBehaviour
     private bool ınTrigger = false;
     private bool projectile = false;
 
+    [SerializeField] private AudioClip deathSFX;
+    [SerializeField] private AudioClip attackSFX;
+    [SerializeField] private AudioClip damageSFX;
+    [SerializeField] private AudioClip ınfectSFX;
+
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -107,6 +112,7 @@ public class EnemyManager : MonoBehaviour
 
         if (_health <= 0)
         {
+            _gameManager._audioSource.PlayOneShot(deathSFX);
             _gameManager.Score += 100;
             Destroy(gameObject);
         }
@@ -172,6 +178,7 @@ public class EnemyManager : MonoBehaviour
     {
         if (_animator != null && _animator.GetCurrentAnimatorStateInfo(0).IsTag("InAttack"))
         {
+            _gameManager._audioSource.PlayOneShot(attackSFX);
             animationControl(false);
         }
     }
@@ -205,6 +212,7 @@ public class EnemyManager : MonoBehaviour
     {
         if (other.gameObject.tag == "Hook")
         {
+            _gameManager._audioSource.PlayOneShot(ınfectSFX);
             Destroy(gameObject);
             replacePlayer();;
             Destroy(other.transform.parent.gameObject);
@@ -213,6 +221,7 @@ public class EnemyManager : MonoBehaviour
 
         if (other.gameObject.tag == "Player" && damageTimer <= 0)
         {
+            _gameManager._audioSource.PlayOneShot(damageSFX);
             damageTimer -= 2f;
             _health -= 1;
             Debug.Log("GET Hit " + _health);
@@ -220,6 +229,7 @@ public class EnemyManager : MonoBehaviour
 
         if (other.gameObject.tag == "ProjectilePlayer")
         {
+            _gameManager._audioSource.PlayOneShot(damageSFX);
             Destroy(other.gameObject);
             _health -= 1;
             Debug.Log("GET Hit " + _health);
