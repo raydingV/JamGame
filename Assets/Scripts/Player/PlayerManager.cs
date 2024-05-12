@@ -14,11 +14,13 @@ public class PlayerManager : MonoBehaviour
     private Animator hookAnimator;
     [SerializeField] private AnimatorController animatorController;
     public SpriteRenderer _renderer;
+    [SerializeField] private GameManager _gameManager;
         
     [SerializeField] private GameObject attackCollider;
     [SerializeField] private GameObject hookAttack;
     [SerializeField] private GameObject turnBackVFX;
     [SerializeField] private GameObject bloodVFX;
+    [SerializeField] private GameObject InfectedProjectile;
     private GameObject newHook;
     private Sprite oldSprite;
     
@@ -38,14 +40,20 @@ public class PlayerManager : MonoBehaviour
     private float AngleRad;
     private float countDown = 15f;
     private float countDownDamage = 0f;
+
+    private float coolDownAttacks = 0f;
     
     public bool _capture = false;
-    
+    private bool projectileInfect = false;
+
+    private CapsuleCollider2D _collider2D;
+
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _renderer = GetComponent<SpriteRenderer>();
+        _collider2D = GetComponent<CapsuleCollider2D>();
     }
 
     private void Start()
@@ -56,6 +64,11 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
+        if (_healthPlayer <= 0 && _gameManager != null)
+        {
+                _gameManager.GameOver();
+        }
+        
         if (_capture == false)
         {
             attackInput();
@@ -75,6 +88,8 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
+        Debug.Log(coolDownAttacks);
+        coolDownAttacks -= Time.deltaTime;
         countDownDamage -= Time.deltaTime;
         
         if (newHook != null)
@@ -106,10 +121,19 @@ public class PlayerManager : MonoBehaviour
 
     void attackInput()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && coolDownAttacks <= 0)
         {
+            coolDownAttacks = 1f;
+            StartCoroutine(Impact());
+            _collider2D.isTrigger = true;
             Instantiate(attackCollider, transform.position, Quaternion.identity);
         }
+    }
+
+    IEnumerator Impact()
+    {
+        yield return new WaitForSeconds(0.7f);
+        _collider2D.isTrigger = false;
     }
 
     void animationPlayer()
@@ -146,8 +170,9 @@ public class PlayerManager : MonoBehaviour
 
     void ınfectedAttack()
     {
-        if (Input.GetMouseButtonDown(0) && gameObject.tag == "Untagged")
+        if (Input.GetMouseButtonDown(0) && gameObject.tag == "Untagged" && coolDownAttacks <= 0)
         {
+            coolDownAttacks = 1f;
             Vector2 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             if (_mousePosition.x > transform.position.x)
@@ -157,6 +182,12 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 _renderer.flipX = true;
+            }
+
+            if (projectileInfect == true)
+            {
+                Instantiate(InfectedProjectile, new Vector2(transform.position.x, transform.position.y + 2),
+                    Quaternion.identity);
             }
             
             gameObject.tag = "Player";
@@ -203,7 +234,7 @@ public class PlayerManager : MonoBehaviour
         _animator.runtimeAnimatorController = _animatorController;
     }
 
-    public void collectDataEnemy(float _speed, float _health, Vector3 _scale)
+    public void collectDataEnemy(float _speed, float _health, Vector3 _scale, bool condition)
     {
         oldSpeed = _speedPlayer;
         _speedPlayer = 20;
@@ -212,6 +243,8 @@ public class PlayerManager : MonoBehaviour
         _healthPlayer = 30;
 
         transform.localScale = _scale;
+
+        projectileInfect = condition;
     }
 
     private void timer()
@@ -236,6 +269,7 @@ public class PlayerManager : MonoBehaviour
         gameObject.tag = "Untagged";
         countDown = 15f;
         _capture = false;
+        projectileInfect = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

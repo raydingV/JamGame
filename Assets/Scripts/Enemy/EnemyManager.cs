@@ -41,6 +41,7 @@ public class EnemyManager : MonoBehaviour
     
     private bool attacking = false;
     private bool ınTrigger = false;
+    private bool projectile = false;
 
     private void Awake()
     {
@@ -65,6 +66,11 @@ public class EnemyManager : MonoBehaviour
         _animator.runtimeAnimatorController = _animation;
         
         _collider.size = new Vector2(_spriteRenderer.size.x, _spriteRenderer.size.y);
+
+        if (projectileGameObject != null)
+        {
+            projectile = true;
+        }
     }
 
     private void Update()
@@ -101,6 +107,7 @@ public class EnemyManager : MonoBehaviour
 
         if (_health <= 0)
         {
+            _gameManager.Score += 100;
             Destroy(gameObject);
         }
     }
@@ -142,7 +149,7 @@ public class EnemyManager : MonoBehaviour
             _gameManager._player._capture = true;
             _gameManager._player.spriteShow(_spriteVirus);
             _gameManager._player.AnimationController(_animationVirus);
-            _gameManager._player.collectDataEnemy(_speed + 2, _health, data.Scale);
+            _gameManager._player.collectDataEnemy(_speed + 2, _health, data.Scale, projectile);
             _gameManager._player.transform.position = transform.position;
         }
     }
@@ -207,6 +214,13 @@ public class EnemyManager : MonoBehaviour
         if (other.gameObject.tag == "Player" && damageTimer <= 0)
         {
             damageTimer -= 2f;
+            _health -= 1;
+            Debug.Log("GET Hit " + _health);
+        }
+
+        if (other.gameObject.tag == "ProjectilePlayer")
+        {
+            Destroy(other.gameObject);
             _health -= 1;
             Debug.Log("GET Hit " + _health);
         }
