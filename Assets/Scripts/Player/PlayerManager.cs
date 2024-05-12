@@ -36,8 +36,9 @@ public class PlayerManager : MonoBehaviour
     private float camDis;
     private float angle;
     private float AngleRad;
-    private float countDown = 5f;
-
+    private float countDown = 15f;
+    private float countDownDamage = 0f;
+    
     public bool _capture = false;
     
     void Awake()
@@ -68,11 +69,13 @@ public class PlayerManager : MonoBehaviour
             controlAnimEnd();
             timer();;
 
-            if (_healthPlayer <= 0)
+            if (_healthPlayer <= 0 && _capture == true)
             {
                 getBackToNormal();
             }
         }
+
+        countDownDamage -= Time.deltaTime;
         
         if (newHook != null)
         {
@@ -86,7 +89,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         // Debug.Log(countDown);
-        Debug.Log(_healthPlayer);
+        //Debug.Log(_healthPlayer);
     }
 
     private void FixedUpdate()
@@ -143,8 +146,20 @@ public class PlayerManager : MonoBehaviour
 
     void ınfectedAttack()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && gameObject.tag == "Untagged")
         {
+            Vector2 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            if (_mousePosition.x > transform.position.x)
+            {
+                _renderer.flipX = false;
+            }
+            else
+            {
+                _renderer.flipX = true;
+            }
+            
+            gameObject.tag = "Player";
             _animator.SetBool("Attack", true);
         }
     }
@@ -153,13 +168,9 @@ public class PlayerManager : MonoBehaviour
     {
         if (_animator != null && _animator.GetCurrentAnimatorStateInfo(0).IsTag("InAttack"))
         {
-            animationControl(false);
+            gameObject.tag = "Untagged";
+            _animator.SetBool("Attack", false);
         }
-    }
-    
-    private void animationControl(bool _condition)
-    {
-        _animator.SetBool("Attack", _condition);
     }
 
     private void controlHookAnimEnd()
@@ -195,10 +206,10 @@ public class PlayerManager : MonoBehaviour
     public void collectDataEnemy(float _speed, float _health, Vector3 _scale)
     {
         oldSpeed = _speedPlayer;
-        _speedPlayer = _speed;
+        _speedPlayer = 20;
 
         oldHealth = _healthPlayer;
-        _healthPlayer = _health;
+        _healthPlayer = 30;
 
         transform.localScale = _scale;
     }
@@ -209,8 +220,7 @@ public class PlayerManager : MonoBehaviour
 
         if (countDown <= 0 && _capture == true)
         {
-            _capture = false;
-            countDown = 3f;
+            countDown = 15f;
             getBackToNormal();;
         }
     }
@@ -223,6 +233,9 @@ public class PlayerManager : MonoBehaviour
         _healthPlayer = oldHealth;
         _speedPlayer = oldSpeed;
         transform.localScale = oldScale;
+        gameObject.tag = "Untagged";
+        countDown = 15f;
+        _capture = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -230,15 +243,17 @@ public class PlayerManager : MonoBehaviour
 
         if (other.TryGetComponent<EnemyManager>(out EnemyManager _data))
         {
-            if (_data != null && other.gameObject.CompareTag("EnemyAttack"))
+            if (_data != null && other.gameObject.CompareTag("EnemyAttack") && gameObject.CompareTag("Untagged"))
             {
+                countDownDamage = 2f;
                 _healthPlayer -= _data._damage;
                 Instantiate(bloodVFX, transform.position, quaternion.identity);
             }
         }
 
-        if (other.gameObject.CompareTag("Projectile"))
+        if (other.gameObject.CompareTag("Projectile") && countDownDamage <= 0)
         {
+            countDownDamage = 2f;
             Destroy(other.gameObject);
             _healthPlayer -= 10f;
             Instantiate(bloodVFX, transform.position, quaternion.identity);

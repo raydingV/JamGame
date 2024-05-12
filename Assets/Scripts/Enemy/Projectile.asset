@@ -17,9 +17,9 @@ MonoBehaviour:
   ArtVirus: {fileID: -306254571, guid: a88b5a1f4e708e044a5e60fb8031b20a, type: 3}
   AnimationNormal: {fileID: 9100000, guid: b005bce16acbe9e46a71b5a37141ec77, type: 2}
   "AnimationV\u0131rus": {fileID: 9100000, guid: dc644da49a4a50944807aacf2fb6efc9, type: 2}
-  Health: 80
+  Health: 1
   Speed: 6
   Distance: 20
-  Damage: 0
+  Damage: 1
   Scale: {x: 6, y: 6, z: 6}
   Projectile: {fileID: 4254851555892507245, guid: d53f6cbcd0828e0449ec36bdfb9754d2, type: 3}

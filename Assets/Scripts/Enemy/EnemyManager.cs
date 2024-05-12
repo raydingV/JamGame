@@ -11,7 +11,7 @@ using UnityEngine.UI;
 public class EnemyManager : MonoBehaviour
 {
     [Header("Componenets")]
-    [SerializeField] private EnemyData data;
+    public EnemyData data;
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject hookExpVFX;
     [SerializeField] private GameObject projectileGameObject;
@@ -23,6 +23,7 @@ public class EnemyManager : MonoBehaviour
     private AnimatorController _animationVirus;
     private Animator _animator;
     private BoxCollider2D _collider;
+    private Rigidbody2D _rigidbody2D;
 
     [Header("UI")]
     [SerializeField] private Text _textName;
@@ -35,6 +36,7 @@ public class EnemyManager : MonoBehaviour
     private float _speed;
     private float _distanceAttack;
     private float timer = 0f;
+    private float damageTimer = 0f;
     [HideInInspector] public float _damage;
     
     private bool attacking = false;
@@ -45,6 +47,7 @@ public class EnemyManager : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _collider = GetComponent<BoxCollider2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
     private void OnEnable()
@@ -57,6 +60,7 @@ public class EnemyManager : MonoBehaviour
 
     private void Start()
     {
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         // _spriteRenderer.sprite = _sprite
         _animator.runtimeAnimatorController = _animation;
         
@@ -88,6 +92,17 @@ public class EnemyManager : MonoBehaviour
 
         controlAnimEnd();
         rotation();
+
+        damageTimer -= Time.deltaTime;
+
+        _rigidbody2D.velocity = Vector2.zero;
+        _rigidbody2D.angularVelocity = 0f;
+        _rigidbody2D.Sleep();
+
+        if (_health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void FixedUpdate()
@@ -187,6 +202,13 @@ public class EnemyManager : MonoBehaviour
             replacePlayer();;
             Destroy(other.transform.parent.gameObject);
             Instantiate(hookExpVFX, transform.position, quaternion.identity);
+        }
+
+        if (other.gameObject.tag == "Player" && damageTimer <= 0)
+        {
+            damageTimer -= 2f;
+            _health -= 1;
+            Debug.Log("GET Hit " + _health);
         }
     }
 }
