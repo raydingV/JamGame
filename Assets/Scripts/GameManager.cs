@@ -17,7 +17,15 @@ public class GameManager : MonoBehaviour
     public GameObject ImpactImage;
     public GameObject TimerObject;
     public TextMeshProUGUI timerText;
-    
+    public TextMeshProUGUI scoreText;
+
+    public AudioSource _audioSource;
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
        scoreManagement();;
@@ -26,10 +34,17 @@ public class GameManager : MonoBehaviour
     void scoreManagement()
     {
         Score += 20 * Time.deltaTime;
+
+        scoreText.text = "Score: " + Score.ToString("F2");
     }
 
     public void GameOver()
     {
-        SceneManager.LoadScene(null);
+        SceneManager.LoadScene("Menu");
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene("map");
     }
 }

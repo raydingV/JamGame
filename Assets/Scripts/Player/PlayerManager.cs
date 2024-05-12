@@ -50,6 +50,11 @@ public class PlayerManager : MonoBehaviour
     private CapsuleCollider2D _collider2D;
 
     [SerializeField] private Slider healthBar;
+    
+    [SerializeField] private AudioClip skill1;
+    [SerializeField] private AudioClip attackSFX;
+    [SerializeField] private AudioClip damageSFX;
+    [SerializeField] private AudioClip handSFX;
 
     void Awake()
     {
@@ -141,6 +146,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && coolDownAttacks <= 0)
         {
+            _gameManager._audioSource.PlayOneShot(skill1);
             coolDownAttacks = 1f;
             StartCoroutine(Impact());
             _collider2D.isTrigger = true;
@@ -163,6 +169,8 @@ public class PlayerManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
+            _gameManager._audioSource.PlayOneShot(handSFX);
+
             newHook = Instantiate(hookAttack, transform.position, Quaternion.identity);
             newHookRb = newHook.GetComponent<Rigidbody2D>();
             hookAnimator = newHook.GetComponent<Animator>();
@@ -190,6 +198,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && gameObject.tag == "Untagged" && coolDownAttacks <= 0)
         {
+            _gameManager._audioSource.PlayOneShot(attackSFX);
             coolDownAttacks = 1f;
             Vector2 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -299,6 +308,7 @@ public class PlayerManager : MonoBehaviour
         {
             if (_data != null && other.gameObject.CompareTag("EnemyAttack") && gameObject.CompareTag("Untagged"))
             {
+                _gameManager._audioSource.PlayOneShot(damageSFX);
                 countDownDamage = 2f;
                 _healthPlayer -= _data._damage;
                 Instantiate(bloodVFX, transform.position, quaternion.identity);
@@ -307,6 +317,7 @@ public class PlayerManager : MonoBehaviour
 
         if (other.gameObject.CompareTag("Projectile") && countDownDamage <= 0)
         {
+            _gameManager._audioSource.PlayOneShot(damageSFX);
             countDownDamage = 2f;
             Destroy(other.gameObject);
             _healthPlayer -= 10f;

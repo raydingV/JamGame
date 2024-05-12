@@ -108,6 +108,10 @@ MonoBehaviour:
   projectileGameObject: {fileID: 0}
   _textName: {fileID: 0}
   _damage: 0
+  deathSFX: {fileID: 8300000, guid: c1339d22f39bebf4db858e645c1d74bd, type: 3}
+  attackSFX: {fileID: 8300000, guid: 106a62a0dde6b10439ae450c33fb9d2d, type: 3}
+  damageSFX: {fileID: 8300000, guid: fd38a6bf2b8c4cd45bbd760265acabf4, type: 3}
+  "\u0131nfectSFX": {fileID: 8300000, guid: d8be04ccb4025b140b79bb1af1d020c3, type: 3}
 --- !u!95 &2895959834082776360
 Animator:
   serializedVersion: 5
