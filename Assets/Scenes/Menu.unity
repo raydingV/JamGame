@@ -494,7 +494,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VrioKinetic
+  m_text: ViroKinetic
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dedd97aa042ab624f939161597090d9b, type: 2}
   m_sharedMaterial: {fileID: 6433975773917515643, guid: dedd97aa042ab624f939161597090d9b, type: 2}

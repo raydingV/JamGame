@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewEnemy", menuName = "Enemy")]
@@ -12,8 +9,8 @@ public class EnemyData : ScriptableObject
     [Header("ArtWorks")]
     public Sprite Art;
     public Sprite ArtVirus;
-    public AnimatorController AnimationNormal;
-    public AnimatorController AnimationVırus;
+    public RuntimeAnimatorController AnimationNormal;
+    public RuntimeAnimatorController AnimationVırus;
     
     [Header("Values")]
     public float Health;

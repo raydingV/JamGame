@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,8 +13,8 @@ public class EnemyManager : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Sprite _sprite;
     private Sprite _spriteVirus;
-    private AnimatorController _animation;
-    private AnimatorController _animationVirus;
+    private RuntimeAnimatorController _animation;
+    private RuntimeAnimatorController _animationVirus;
     private Animator _animator;
     private BoxCollider2D _collider;
     private Rigidbody2D _rigidbody2D;

@@ -1,10 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
 
 public class PlayerManager : MonoBehaviour
@@ -13,7 +9,7 @@ public class PlayerManager : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private Animator _animator;
     private Animator hookAnimator;
-    [SerializeField] private AnimatorController animatorController;
+    [SerializeField] private RuntimeAnimatorController animatorController;
     public SpriteRenderer _renderer;
     [SerializeField] private GameManager _gameManager;
         
@@ -256,7 +252,7 @@ public class PlayerManager : MonoBehaviour
         _renderer.sprite = _sprite;
     }
 
-    public void AnimationController(AnimatorController _animatorController)
+    public void AnimationController(RuntimeAnimatorController _animatorController)
     {
         _animator.runtimeAnimatorController = _animatorController;
     }
