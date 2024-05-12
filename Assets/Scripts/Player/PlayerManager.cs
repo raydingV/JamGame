@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEditor.Animations;
+using UnityEngine.Animations;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
@@ -256,7 +257,7 @@ public class PlayerManager : MonoBehaviour
         _renderer.sprite = _sprite;
     }
 
-    public void AnimationController(AnimatorController _animatorController)
+    public void AnimationController(RuntimeAnimatorController _animatorController)
     {
         _animator.runtimeAnimatorController = _animatorController;
     }
