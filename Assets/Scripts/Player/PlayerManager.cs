@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Slider = UnityEngine.UI.Slider;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public class PlayerManager : MonoBehaviour
 
     private CapsuleCollider2D _collider2D;
 
+    [SerializeField] private Slider healthBar;
+
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -60,6 +63,7 @@ public class PlayerManager : MonoBehaviour
     {
         oldSprite = _renderer.sprite;
         oldScale = transform.localScale;
+        healthBar.maxValue = _healthPlayer;
     }
 
     void Update()
@@ -86,6 +90,20 @@ public class PlayerManager : MonoBehaviour
             {
                 getBackToNormal();
             }
+        }
+
+        healthBar.value = _healthPlayer;
+        _gameManager.timerText.text = "CoolDown: " + coolDownAttacks.ToString("F2");
+
+        if (coolDownAttacks >= 0)
+        {
+            _gameManager.ImpactImage.SetActive(false);
+            _gameManager.TimerObject.SetActive(true);
+        }
+        else
+        {
+            _gameManager.ImpactImage.SetActive(true);
+            _gameManager.TimerObject.SetActive(false);
         }
 
         Debug.Log(coolDownAttacks);
@@ -245,6 +263,8 @@ public class PlayerManager : MonoBehaviour
         transform.localScale = _scale;
 
         projectileInfect = condition;
+        
+        healthBar.maxValue = _healthPlayer;
     }
 
     private void timer()
