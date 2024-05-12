@@ -5,11 +5,16 @@ using UnityEngine;
 
 public class ProjectileAttack : MonoBehaviour
 {
+    [SerializeField] private bool player = false;
     [SerializeField] private GameManager _gameManager;
-    [SerializeField] private Vector3 playerLocation;
+    [SerializeField] private Vector3 _destination;
 
     private SpriteRenderer _spriteRenderer;
     Rigidbody2D rb;
+
+    private bool getOne = false;
+
+    private float distanceToDest;
 
     private void Awake()
     {
@@ -19,13 +24,18 @@ public class ProjectileAttack : MonoBehaviour
 
     private void Start()
     {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        StartCoroutine(timer());
+        if (player == false)
+        {
+            _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();   
+            StartCoroutine(timer());
+        }
     }
 
     private void Update()
     {
         flipUpdate();
+        
+        distance();
     }
 
     private void FixedUpdate()
@@ -37,15 +47,41 @@ public class ProjectileAttack : MonoBehaviour
     {
         if (_gameManager != null)
         {
-            playerLocation = _gameManager._player.transform.position;
+            _destination = _gameManager._player.transform.position;
+        }
+    }
+
+    void MousePosition()
+    {
+        if (getOne == false)
+        {
+            _destination = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            getOne = true;   
+        }
+    }
+
+    void distance()
+    {
+        distanceToDest = Vector2.Distance(transform.position, _destination);
+
+        if (distanceToDest <= 0.5f)
+        {
+            Destroy(gameObject);
         }
     }
 
     void Movement()
     {
-        getPlayerLocation();
+        if (player == false)
+        {
+            getPlayerLocation();
+        }
+        else
+        {
+            MousePosition();
+        }
         
-        transform.position = Vector2.MoveTowards(transform.position, playerLocation, 10f * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, _destination, 10f * Time.deltaTime);
     }
     
     void flipUpdate()
