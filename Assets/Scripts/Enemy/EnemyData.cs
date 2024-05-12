@@ -19,6 +19,9 @@ public class EnemyData : ScriptableObject
     public float Health;
     public float Speed;
     public float Distance;
+    public float Damage;
     public Vector3 Scale;
-    
+
+    public GameObject Projectile;
+
 }
