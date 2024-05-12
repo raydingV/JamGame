@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -16,14 +17,18 @@ public class PlayerManager : MonoBehaviour
         
     [SerializeField] private GameObject attackCollider;
     [SerializeField] private GameObject hookAttack;
+    [SerializeField] private GameObject turnBackVFX;
+    [SerializeField] private GameObject bloodVFX;
     private GameObject newHook;
     private Sprite oldSprite;
     
     [Header("Values")]
     private float _horizontal;
     private float _vertical;
-    [SerializeField] private float _speedPlayer = 5f;
+    [SerializeField] private float _speedPlayer = 12f;
     [SerializeField] private float _healthPlayer = 100f;
+    private float oldHealth;
+    private float oldSpeed;
 
     Vector3 mousePosition;
     private Vector3 oldScale;
@@ -31,7 +36,7 @@ public class PlayerManager : MonoBehaviour
     private float camDis;
     private float angle;
     private float AngleRad;
-    private float countDown = 3f;
+    private float countDown = 5f;
 
     public bool _capture = false;
     
@@ -62,6 +67,11 @@ public class PlayerManager : MonoBehaviour
             flipSprite();
             controlAnimEnd();
             timer();;
+
+            if (_healthPlayer <= 0)
+            {
+                getBackToNormal();
+            }
         }
         
         if (newHook != null)
@@ -75,7 +85,8 @@ public class PlayerManager : MonoBehaviour
             playerHook();
         }
 
-        Debug.Log(countDown);
+        // Debug.Log(countDown);
+        Debug.Log(_healthPlayer);
     }
 
     private void FixedUpdate()
@@ -183,7 +194,10 @@ public class PlayerManager : MonoBehaviour
 
     public void collectDataEnemy(float _speed, float _health, Vector3 _scale)
     {
+        oldSpeed = _speedPlayer;
         _speedPlayer = _speed;
+
+        oldHealth = _healthPlayer;
         _healthPlayer = _health;
 
         transform.localScale = _scale;
@@ -193,7 +207,7 @@ public class PlayerManager : MonoBehaviour
     {
         countDown -= Time.deltaTime;
 
-        if (countDown <= 0)
+        if (countDown <= 0 && _capture == true)
         {
             _capture = false;
             countDown = 3f;
@@ -203,8 +217,31 @@ public class PlayerManager : MonoBehaviour
 
     public void getBackToNormal()
     {
+        Instantiate(turnBackVFX, transform.position, Quaternion.identity);
         _animator.runtimeAnimatorController = animatorController;
         _renderer.sprite = oldSprite;
+        _healthPlayer = oldHealth;
+        _speedPlayer = oldSpeed;
         transform.localScale = oldScale;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+
+        if (other.TryGetComponent<EnemyManager>(out EnemyManager _data))
+        {
+            if (_data != null && other.gameObject.CompareTag("EnemyAttack"))
+            {
+                _healthPlayer -= _data._damage;
+                Instantiate(bloodVFX, transform.position, quaternion.identity);
+            }
+        }
+
+        if (other.gameObject.CompareTag("Projectile"))
+        {
+            Destroy(other.gameObject);
+            _healthPlayer -= 10f;
+            Instantiate(bloodVFX, transform.position, quaternion.identity);
+        }
     }
 }

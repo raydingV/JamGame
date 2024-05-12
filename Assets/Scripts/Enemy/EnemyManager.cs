@@ -14,6 +14,8 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private EnemyData data;
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameObject hookExpVFX;
+    [SerializeField] private GameObject projectileGameObject;
+    private GameObject newProjectile;
     private SpriteRenderer _spriteRenderer;
     private Sprite _sprite;
     private Sprite _spriteVirus;
@@ -29,9 +31,11 @@ public class EnemyManager : MonoBehaviour
 
 
     [Header("Values")] 
-    [SerializeField] private float _health;
-    [SerializeField] private float _speed;
-    [SerializeField] private float _distanceAttack;
+    private float _health;
+    private float _speed;
+    private float _distanceAttack;
+    private float timer = 0f;
+    [HideInInspector] public float _damage;
     
     private bool attacking = false;
     private bool ınTrigger = false;
@@ -63,8 +67,22 @@ public class EnemyManager : MonoBehaviour
     {
         if (attackDistance() == true)
         {
+            gameObject.tag = "EnemyAttack";
             animationControl(true);
         }
+        else
+        {
+            gameObject.tag = "Enemy";
+        }
+
+        if (projectileGameObject != null && attackDistance() == true && timer <= 0f)
+        {
+            newProjectile = Instantiate(projectileGameObject, new Vector2(transform.position.x, transform.position.y + 2),
+                Quaternion.identity);
+            timer = 3f;
+        }
+        
+        timer -= Time.deltaTime;
 
         attacking = attackDistance();
 
@@ -90,6 +108,8 @@ public class EnemyManager : MonoBehaviour
         _speed = data.Speed;
         transform.localScale = data.Scale;
         _distanceAttack = data.Distance;
+        _damage = data.Damage;
+        projectileGameObject = data.Projectile;
     }
 
     private void followPlayer()
@@ -163,10 +183,10 @@ public class EnemyManager : MonoBehaviour
     {
         if (other.gameObject.tag == "Hook")
         {
+            Destroy(gameObject);
             replacePlayer();;
             Destroy(other.transform.parent.gameObject);
-            Instantiate(hookExpVFX, transform.position, quaternion.identity);   
-            Destroy(gameObject);
+            Instantiate(hookExpVFX, transform.position, quaternion.identity);
         }
     }
 }
